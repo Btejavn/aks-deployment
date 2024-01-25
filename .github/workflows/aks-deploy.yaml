@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-    # paths:
+    paths:
+      - "src/**"
     #   - './**'
     #   - '.github/workloads/dev/**'
 
@@ -44,12 +45,7 @@ jobs:
         run: |
           export ACRNAME
 
-      - name: Azure Kubernetes Service
-        uses: azure/k8s-deploy@v4
-        with:
-          action: deploy
-          manifests: "src/**"
-          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
+      
 
 
         
