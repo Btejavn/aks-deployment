@@ -1,6 +1,24 @@
-- name: Debug Azure Credentials
-  run: |
-    echo "$AZURE_CREDENTIALS" | jq .
-    az --version
-  env:
-    AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+name: Debug Azure Credentials
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  debug-azure-credentials:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Debug Azure Credentials
+        run: |
+          echo "Azure Credentials:"
+          echo "$AZURE_CREDENTIALS" | jq .
+          
+          echo "Azure CLI Version:"
+          az --version
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
