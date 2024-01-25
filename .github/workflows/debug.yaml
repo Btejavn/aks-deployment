@@ -3,7 +3,7 @@ name: Debug Azure Credentials
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   debug-azure-credentials:

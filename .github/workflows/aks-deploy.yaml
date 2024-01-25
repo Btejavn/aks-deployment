@@ -48,7 +48,8 @@ jobs:
         uses: azure/k8s-deploy@v4
         with:
           azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
-          k8sSpecPath: .github/workloads/*.yaml  # Adjust this line to match your file path
+          manifests: .github/workloads/*.yaml  # Adjust this line to match your file path
+        
         
      
 
