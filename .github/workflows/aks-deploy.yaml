@@ -1,1 +1,82 @@
 
+name: DEV AZURE TIKTOK MENTIONS DEPLOYMENT
+
+on:
+  push:
+    branches:
+      - dev-azure
+    # paths:
+    #   - './**'
+    #   - '.github/workloads/dev/**'
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  BuildPush:
+    runs-on: ubuntu-latest
+    environment: "dev-azure"
+    env:
+      ACRNAME: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+      AZURE_DEV_ENV_FILE: ${{secrets.AZURE_DEV_ENV_FILE}}
+
+    steps:
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@v3
+          - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.DEV_AZURE_CREDENTIALS }}
+        
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.DEV_REGISTRY_USERNAME }}
+            password: ${{ secrets.DEV_REGISTRY_PASSWORD }}
+            
+        - run: |
+            echo "$AZURE_DEV_ENV_FILE" >> .env
+            docker build ./ -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/tiktok-mentions:${{ github.sha }}
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/tiktok-mentions:${{ github.sha }}
+            Deploy:
+    runs-on: ubuntu-latest
+    environment: "dev-azure"
+    needs: [BuildPush]
+
+    steps:
+      - name: Get application k8s manifests from repo
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.DEV_AZURE_CREDENTIALS }}
+
+      - name: Install Kubectl
+        uses: azure/setup-kubectl@v3.0
+        with:
+            version: 'latest'
+
+      - name: Set the target Azure Kubernetes Service (AKS) cluster.
+        uses: azure/aks-set-context@v1
+        with:
+          creds: ${{ secrets.DEV_AZURE_CREDENTIALS }}
+          cluster-name: "aks-dev"
+          resource-group: ${{ secrets.DEV_RESOURCE_GROUP }}
+      
+      - name: Set environment variable
+        env:
+          ACRNAME: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+        run: |
+          export ACRNAME
+
+      - name: Deploy app to AKS
+        uses: azure/k8s-deploy@v4
+        with:
+          action: deploy
+          manifests:
+           .github/workloads/deployment-consumer-data.yaml
+           .github/workloads/deployment-tiktok-datalake-consumer.yaml
+           .github/workloads/deployment-tiktok-request-consumer.yaml
