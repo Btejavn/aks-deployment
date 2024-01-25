@@ -1,4 +1,5 @@
-name: DEV
+Run azure/k8s-deploy@v4
+  name: DEV
 
 on:
   push:
@@ -6,6 +7,7 @@ on:
       - main
     paths:
       - "src/**"
+    # paths:
     #   - './**'
     #   - '.github/workloads/dev/**'
 
@@ -25,7 +27,7 @@ jobs:
       - name: Azure Login
         uses: Azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }} # Use the 'creds' input instead of 'azureCredentials'
 
       - name: Install Kubectl
         uses: azure/setup-kubectl@v3.0
@@ -35,7 +37,7 @@ jobs:
       - name: Set the target Azure Kubernetes Service (AKS) cluster.
         uses: azure/aks-set-context@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }} # Use the same 'creds' input as above
           cluster-name: "aks-free-eastus-1"
           resource-group: ${{ secrets.RESOURCE_GROUP }}
 
@@ -44,7 +46,6 @@ jobs:
           ACRNAME: ${{ secrets.REGISTRY_LOGIN_SERVER }}
         run: |
           export ACRNAME
-
       
 
 
