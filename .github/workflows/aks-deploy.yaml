@@ -15,7 +15,6 @@ permissions:
 jobs:
   BuildPush:
     runs-on: ubuntu-latest
-    environment: "dev-azure"
     env:
       ACRNAME: ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
@@ -35,8 +34,7 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      - run: |
-          echo "$AZURE_DEV_ENV_FILE" >> .env
+      - run:
           docker build ./ -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/tiktok-mentions:${{ github.sha }}
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/tiktok-mentions:${{ github.sha }}
 
@@ -75,10 +73,8 @@ jobs:
       - name: Deploy app to AKS
         uses: azure/k8s-deploy@v4
         with:
-          action: deploy
-          manifests:
-            - .github/workloads/3.yaml
-            - .github/workloads/2.yaml
-            - .github/workloads/1.yaml
+            action: deploy
+            manifests: .github/workloads/*.yaml
+  
 
-   
+            
