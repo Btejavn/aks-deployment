@@ -1,0 +1,6 @@
+- name: Debug Azure Credentials
+  run: |
+    echo "$AZURE_CREDENTIALS" | jq .
+    az --version
+  env:
+    AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
