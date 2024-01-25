@@ -19,7 +19,7 @@ spec:
         image: nginx
         imagePullPolicy: Always
         ports:
-        - containerPort: 8003
+        - containerPort: 8001
         resources:
           requests:
             cpu: 100m
@@ -38,4 +38,4 @@ spec:
     app: tiktok
   ports:
   - port: 80
-    targetPort: 8003
+    targetPort: 8001
