@@ -48,10 +48,8 @@ jobs:
         uses: azure/k8s-deploy@v4
         with:
           action: deploy
-          manifests: |
-            ".github/workloads/1.yaml"
-            ".github/workloads/2.yaml"
-            ".github/workloads/3.yaml"
+          manifests: "src/**"
+          azureCredentials: ${{ secrets.AZURE_CREDENTIALS }}
 
 
         
