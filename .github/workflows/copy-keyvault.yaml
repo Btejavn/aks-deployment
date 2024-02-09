@@ -25,6 +25,12 @@ jobs:
           SECRETS=($(az keyvault secret list --vault-name $SOURCE_KEYVAULT --query "[].id" -o tsv))
           echo "::set-output name=secrets::${SECRETS[*]}"
 
+      - name: Debug output
+        run: |
+          echo "SOURCE_KEYVAULT: $SOURCE_KEYVAULT"
+          echo "DESTINATION_KEYVAULT: $DESTINATION_KEYVAULT"
+          echo "Secrets: ${SECRETS[*]}"
+
       - name: Copy secrets to destination Key Vault
         id: copy-secrets
         run: |
