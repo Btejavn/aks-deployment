@@ -3,7 +3,7 @@ name: Copy Secrets to Key Vault
 on:
   push:
     branches:
-      - main
+      - Btejavn-patch-1
 
 jobs:
   copy-secrets:
