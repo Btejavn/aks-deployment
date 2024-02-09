@@ -1,4 +1,4 @@
-name: Copy Secrets to Key Vault
+name: Copy Secrets to Key Vault4
 
 on:
   push:
